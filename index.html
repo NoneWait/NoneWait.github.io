@@ -357,13 +357,26 @@ height:30vh;
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2019/11/25/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/" >
+        <a class="abstract-title" href = "/2019/11/25/papers/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/" >
             
                 <span>预训练模型压缩</span>
         </a>
         <div class="abstract-content">
-            $$A+B=C$$
+            11月主要论文整理最近刚写完毕设和实习复现论文的工作，打算浏览下近期的预训练语言模型的论文（毕设里简单介绍了下这个的思想，并且以后工作了可能会做相关的工作，所以在这学习下）。我们可以以Glue榜单来check下最近的预训练语言模型的论文。据目前所知的情况来看，可以分为几个部分：
 
+修改bert的模型：参数量|本身框架
+修改预训练目标
+添加一些先验知识
+
+2019-11-18修改bert模型
+xlnet
+albert
+
+出发点：目前的预训练模型参数量太大，降低模型参数量贡献：设计了两种减少参数量的技术，设计了一个自监督损失来建模句内共现，有利于多句输入的下游任务
+code
+摘要：
+
+作者发...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -622,6 +635,10 @@ height:30vh;
     
     
     
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 3
@@ -640,12 +657,12 @@ height:30vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">11/25</span><a class="archive-post-title" href= "/2019/11/25/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/" >预训练模型压缩</a>
+            <span class="archive-post-date">11/25</span><a class="archive-post-title" href= "/2019/11/25/demo-again/" >demo_again</a>
         </li>
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">11/25</span><a class="archive-post-title" href= "/2019/11/25/demo-again/" >demo_again</a>
+            <span class="archive-post-date">11/25</span><a class="archive-post-title" href= "/2019/11/25/papers/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/" >预训练模型压缩</a>
         </li>
     
     
@@ -730,25 +747,7 @@ jsonContent:
     </div>
     <!-- async load share.js -->
      
-    <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<!--<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>--!>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
-
-</body>
+    </body>
 </html>
 
 

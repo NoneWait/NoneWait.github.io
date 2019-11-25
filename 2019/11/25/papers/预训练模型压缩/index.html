@@ -272,7 +272,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>Word count: <span class="post-count word-count">3</span>Reading time: <span class="post-count reading-time">1 min</span></span>
+                        <span>Word count: <span class="post-count word-count">1.3k</span>Reading time: <span class="post-count reading-time">5 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -401,16 +401,72 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <p>$$<br>A+B=C<br>$$</p>
+        <h1 id="11月主要论文整理"><a href="#11月主要论文整理" class="headerlink" title="11月主要论文整理"></a>11月主要论文整理</h1><p>最近刚写完毕设和实习复现论文的工作，<br>打算浏览下近期的预训练语言模型的论文<br>（毕设里简单介绍了下这个的思想，并且以后工作<br>了可能会做相关的工作，所以在这学习下）。<br>我们可以以<a href="https://gluebenchmark.com/leaderboard/" target="_blank" rel="noopener">Glue</a><br>榜单来check下最近的预训练语言模型的论文。<br>据目前所知的情况来看，可以分为几个部分：</p>
+<ul>
+<li>修改bert的模型：参数量|本身框架</li>
+<li>修改预训练目标</li>
+<li>添加一些先验知识</li>
+</ul>
+<h2 id="2019-11-18"><a href="#2019-11-18" class="headerlink" title="2019-11-18"></a>2019-11-18</h2><h3 id="修改bert模型"><a href="#修改bert模型" class="headerlink" title="修改bert模型"></a>修改bert模型</h3><ol>
+<li><a href="https://arxiv.org/abs/1906.08237" target="_blank" rel="noopener">xlnet</a></li>
+<li><a href="https://arxiv.org/pdf/1909.11942.pdf" target="_blank" rel="noopener">albert</a></li>
+</ol>
+<p>出发点：目前的预训练模型参数量太大，降低模型参数量<br>贡献：设计了两种减少参数量的技术，设计了一个自监督损失来建模句内<br>共现，有利于多句输入的下游任务</p>
+<p><a href="https://github.com/google-research/google-research/tree/master/albert" target="_blank" rel="noopener">code</a></p>
+<p>摘要：</p>
+<ul>
+<li>作者发现：训练步不够时bert模型性能不佳，增倍bert-large的hidden_size性能也不佳(why？)</li>
+<li>要设计一个模型：address the memory limitation problem， the communication overhead</li>
+<li>and model degradation，也就是说既要降低参数量又要保证模型不退化，所以设计了模型ALBERT(A Lite BERT)</li>
+</ul>
+<p>模型：</p>
+<ul>
+<li>factorized embedding parameterization：把词表的embedding matrix分解为两个子矩阵</li>
+<li>cross-layer parameter sharing：随着网络加深保留参数-&gt;意思就是底层的参数给上层共享，<br>  也就是多层共享一个参数，而不是每层都是一个新参数(所有层只有一组参数？)</li>
+<li>SOP: sentence-order prediction:改进NSP</li>
+</ul>
+<p>details:</p>
+<ul>
+<li><p>对于wordpiece embedding学习的是context-independent表示（和词向量一样，与上下文无关），<br>而hidden-layer embedding则学的是context-dependent表示。所以，因为要更需要学到的<br>是上下文相关的表示，这也是为什么H&gt;&gt;E的原因，原有的模型的词向量矩阵是$V \times E$。<br>所以该方法就是先将词表映射到低维向量，再从低维升到hidden_size，则参数量则从<br>$O(V\times H)$到$O(V \times E+ E \times H)$，<br>当H&gt;&gt;E时参数量会大幅度减少。那么我们的E要设多大呢？在<br>ALBERTZ中是设为128。</p>
+</li>
+<li><p>跨层的参数共享：可以共享FFN，也可以共享attention parameters，ALBERT的选择是共享所有参数</p>
+</li>
+<li><p>Inter-sentence coherence loss:使用SOPloss来实现，<br>正例和NSP中一样生成，而负例则用同样相邻的两个片段但是<br>它们的顺序调换。</p>
+</li>
+</ul>
+<p>实验结果：还是很牛逼的，参数量降低了10倍和base版的bert效果差不多，通过增大H的大小，能够达到更好的效果。在Squad上，(xlarge(ALBERT)60M-&gt;bert_large(334M))</p>
+<h3 id="预训练任务-or-增强训"><a href="#预训练任务-or-增强训" class="headerlink" title="预训练任务 or 增强训"></a>预训练任务 or 增强训</h3><ol>
+<li><a href="">Roberta</a></li>
+<li><a href="">SpanBERT</a></li>
+<li><a href="">T5</a></li>
+</ol>
+<h3 id="先验知识"><a href="#先验知识" class="headerlink" title="先验知识"></a>先验知识</h3><ol>
+<li><a href="">ernie2.0</a></li>
+</ol>
+<h2 id="2019-11-20"><a href="#2019-11-20" class="headerlink" title="2019-11-20"></a>2019-11-20</h2><p>主要是bert模型压缩的问题，从alberta中我们可以<br>知道一部分模型压缩的方式。有几个技术分享：</p>
+<p><a href="https://mp.weixin.qq.com/s/qfluRDWfL40E5Lrp5BdhFw" target="_blank" rel="noopener">美团bert模型探索</a></p>
+<p><a href="https://mp.weixin.qq.com/s/6te0dFNSNZmIsEXDQK6bJg" target="_blank" rel="noopener">BERT 瘦身之路</a></p>
+<p><a href="http://mitchgordon.me/machine/learning/2019/11/18/all-the-ways-to-compress-BERT.html?nsukey=JA5Nagol6IDrscF6V72Mvm8z8g7t02viX3fF%2Ff4qwLkXkFtyWar2oPNViDlMM6WDHKecu0Pd%2FlDOmgIk8TKTJGudSTc2QlqVMnv6NC63PkO2e4ikQ7Mnq0d6Lw5CjG53S%2BqMQVn9pUqKvIuq%2FErvr%2F0glTqCulBKly9pZczDsAO453vogeDVMHtxuPUy4OOmTrXXnGAoIEIdEwWOTh%2Fplw%3D%3D&from=timeline" target="_blank" rel="noopener">All The Ways You Can Compress BERT</a></p>
+<p>结合以上，主要的方法有权重分解（like 上面讲的alberta），知识蒸馏，权重分享，剪纸，<br>混合精度(fp16之类的)。<br>今天我们check一下知识蒸馏。</p>
+<p>知识蒸馏：就是用到teacher+student的思想，利用student模型来拟合teacher的输出分布，<br>框架如图所示：<br><img src="https://mmbiz.qpic.cn/mmbiz_png/Gyc8xouDEr0SdVa967reDicTt7pgKPIKdCevHdz4GR0yBAo5D0PXXv3ppAY9p2QpXQZ0JS4UE9Dbib6OuiaiaWyDrw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="t-s框架"><br>可以看到，主要是通过输出类别的概率来计算loss，在pytorch中可以使用KLD散度loss来等价计算<br>软标签的交叉熵。(参考BERT瘦身之路)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">loss = nn.KLDivLoss(F.log_softmax(s_logits/temperature),F.softmax(t_logits/temperature))    <span class="comment"># temperature保存分布平滑</span></span><br><span class="line">loss = loss * (temperature)**<span class="number">2</span>  <span class="comment"># 保存梯度量级的不变</span></span><br></pre></td></tr></table></figure>
+
+<p>那我们来看看DistillBERT模型。这个模型压缩了bert的40%的大小，保留了97%的性能和加速了<br>60%的速度。在8个16GB的V100上训了90个小时，这种蒸馏的方式相当只更新student部分的参数，所以才能达到这么快的速度。<br>可以看hf的博客文章<a href="https://medium.com/huggingface/distilbert-8cf3380435b5" target="_blank" rel="noopener">Smaller, faster, cheaper, lighter: Introducing DistilBERT, a distilled version of BERT</a>。<br>核心点在于”We are trainning the student to generalize the same way<br>as the teacher by matching the output distribution.”</p>
+<p>训练损失如下：<br>$$<br>L=-\sum_{i}{t_i*log(s_i)}<br>$$<br>其中$t$是从teacher model中预测的logits，而$s$则是从student中预测的。</p>
+<p>接着引入softmax-temperature做平滑：<br>$$<br>p_i = \frac{exp*(z_i/T)}{\sum_j{exp(z_j/T)}}<br>$$<br>当T趋向0，则满足Kronecker分布，而趋向无穷大时，则成uniform分布。<br>在训练的时候在s和t中都设置T使得能从训练样本中学习到更多信号，而预测时则设置<br>T=1。</p>
+<p>在具体实现中使用KL损失：<br>$$<br>KL(p||q) = \sum_{i}p_i<em>log(p_i)-\sum_{i}p_i</em>log(q_i)<br>$$<br>可以在pytorch中实现这个过程</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"></span><br><span class="line">KD_loss = nn.KLDivLoss(reduction=<span class="string">'batchmean'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kd_step</span><span class="params">(teacher: nn.Module,</span></span></span><br><span class="line"><span class="function"><span class="params">            student: nn.Module,</span></span></span><br><span class="line"><span class="function"><span class="params">            temperature: float,</span></span></span><br><span class="line"><span class="function"><span class="params">            inputs: torch.tensor,</span></span></span><br><span class="line"><span class="function"><span class="params">            optimizer)</span>:</span></span><br><span class="line">    teacher.eval()  <span class="comment"># 不更新参数</span></span><br><span class="line">    student.train() <span class="comment"># 更新参数</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        logits_t = teacher(inputs=inputs)</span><br><span class="line"></span><br><span class="line">    logits_s = student(inputs=inputs)</span><br><span class="line"></span><br><span class="line">    loss = KD_loss(input=F.log_softmax(logits_s/temperature, dim=<span class="number">-1</span>),</span><br><span class="line">                   target=F.softmax(logits_t/temperature, dim=<span class="number">-1</span>))</span><br><span class="line"></span><br><span class="line">    loss.backward()</span><br><span class="line">    optimizer.step()</span><br><span class="line">    optimizer.zero_grad()</span><br></pre></td></tr></table></figure>
+
+<p>整个项目的具体实现可以参考<a href="https://github.com/huggingface/transformers/tree/master/examples/distillation" target="_blank" rel="noopener">code</a></p>
 
     </article>
     <!-- license  -->
     
         <div class="license-wrapper">
             <p>Author：<a href="http://NoneWait.github.io">DelaiQ</a>
-            <p>原文链接：<a href="http://nonewait.github.io/2019/11/25/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/">http://nonewait.github.io/2019/11/25/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/</a>
-            <p>发表日期：<a href="http://nonewait.github.io/2019/11/25/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/">November 25th 2019, 5:30:41 pm</a>
-            <p>更新日期：<a href="http://nonewait.github.io/2019/11/25/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/">November 25th 2019, 5:31:38 pm</a>
+            <p>原文链接：<a href="http://nonewait.github.io/2019/11/25/papers/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/">http://nonewait.github.io/2019/11/25/papers/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/</a>
+            <p>发表日期：<a href="http://nonewait.github.io/2019/11/25/papers/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/">November 25th 2019, 5:30:41 pm</a>
+            <p>更新日期：<a href="http://nonewait.github.io/2019/11/25/papers/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/">November 25th 2019, 5:39:37 pm</a>
             <p>版权声明：本文采用<a rel="license noopener" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -536,7 +592,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#11月主要论文整理"><span class="toc-number">1.</span> <span class="toc-text">11月主要论文整理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2019-11-18"><span class="toc-number">1.1.</span> <span class="toc-text">2019-11-18</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#修改bert模型"><span class="toc-number">1.1.1.</span> <span class="toc-text">修改bert模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#预训练任务-or-增强训"><span class="toc-number">1.1.2.</span> <span class="toc-text">预训练任务 or 增强训</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#先验知识"><span class="toc-number">1.1.3.</span> <span class="toc-text">先验知识</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2019-11-20"><span class="toc-number">1.2.</span> <span class="toc-text">2019-11-20</span></a></li></ol></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
@@ -549,6 +605,10 @@ top:50vh;
     <div class="sidebar-content sidebar-content-show-archive">
           <div class="sidebar-panel-archives">
     <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
     
     
     
@@ -592,12 +652,12 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">11/25</span><a class="archive-post-title" href= "/2019/11/25/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/" >预训练模型压缩</a>
+            <span class="archive-post-date">11/25</span><a class="archive-post-title" href= "/2019/11/25/demo-again/" >demo_again</a>
         </li>
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">11/25</span><a class="archive-post-title" href= "/2019/11/25/demo-again/" >demo_again</a>
+            <span class="archive-post-date">11/25</span><a class="archive-post-title" href= "/2019/11/25/papers/%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/" >预训练模型压缩</a>
         </li>
     
     
@@ -684,25 +744,7 @@ jsonContent:
     
         <script src="/scripts/share.js" async></script>    
      
-    <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<!--<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>--!>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
-
-</body>
+    </body>
 </html>
 
 

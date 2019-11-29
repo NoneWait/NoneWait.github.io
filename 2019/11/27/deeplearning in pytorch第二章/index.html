@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>deep learning</title>
+    <title>deep learning with pytorch 第二章 · deep learning</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -77,6 +77,8 @@
 
     <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 /* This file is meant as a standalone workflow for
@@ -201,14 +203,23 @@
 </head>
 
     
-        <body class="home-body">
+        <body class="post-body">
     
     
-<header class="header index-header">
+<header class="header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >NoneWait&#39;s Workspace.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">deep learning with pytorch 第二章</a>
+            </div>
+    </div>
     
     <a class="home-link" href=/>NoneWait's Workspace.</a>
 </header>
@@ -221,23 +232,23 @@
 
 
 
-height:30vh;
+height:50vh;
 ">
     
     <!-- 主页  -->
     
     
-    <!-- 文章页  -->
+    <!-- 404页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/intro/index-bg.jpg)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            NoneWait's Workspace.
-            <!-- 文章页  -->
+            deep learning with pytorch 第二章
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
@@ -245,10 +256,49 @@ height:30vh;
             <!-- 主页副标题  -->
             
             
-            <!-- 文章页  -->
+            <!-- 404 -->
             
         </p>
         <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" target="_blank" rel="noopener" data-tags = "deep learning">deep learning</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>Word count: <span class="post-count word-count">224</span>Reading time: <span class="post-count reading-time">1 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2019/11/27</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
         
     </div>
 </div>
@@ -349,159 +399,60 @@ height:30vh;
 </script>        
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
-            <main class="main index-page">
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2019/11/27/deeplearning%20in%20pytorch%E7%AC%AC%E4%BA%8C%E7%AB%A0/" >
-            
-                <span>deep learning with pytorch 第二章</span>
-        </a>
-        <div class="abstract-content">
-            目的这系列主要是针对看《deep learning with pytorch》电子书做的一些笔记。可能会中英混杂。
-第二章 预训练网络由于之前对图像的一窍不通，所以打算快速浏览下第二章，第二章主要是针对以下三个任务：
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h1><p>这系列主要是针对看《deep learning with pytorch》电子书做的一些笔记。<br>可能会中英混杂。</p>
+<h2 id="第二章-预训练网络"><a href="#第二章-预训练网络" class="headerlink" title="第二章 预训练网络"></a>第二章 预训练网络</h2><p>由于之前对图像的一窍不通，所以打算快速浏览下第二章，第二章主要是针对以下三个任务：</p>
+<ul>
+<li>根据一个图片的内容预测标签：主要是说了有个torchvision这个project，包含了一些主流的模型</li>
+<li>从一个真实图片仿制一个虚假图片：GAN</li>
+<li>使用英语句子来描述图片内容</li>
+</ul>
+<h3 id="2-2-GAN"><a href="#2-2-GAN" class="headerlink" title="2.2 GAN"></a>2.2 GAN</h3><p>The <strong><em>generator</em></strong> network takes the role of the painter, tasked with producing<br>realistic-looking iamges starting from an arbitrary input. The <strong><em>discriminator</em></strong>networks is the amoral art inspector, needing to tell whether a given image<br>was fabricated by the generator or it belonged in a set of real images.<br>这个过程可以如下图所示<img src="https://dpzbhybb2pdcj.cloudfront.net/stevens2/v-10/Figures/p1ch2_gangame.png" alt="GAN概念"></p>
+<p>哈哈哈哈看到这里结果就没有免费的了！垃圾电子书哈哈哈哈！</p>
 
-根据一个图片的内容预测标签：主要是说了有个torchvision这个project，包含了一些主流的模型
-从一个真实图片仿制一个虚假图片：GAN
-使用英语句子来描述图片内容
-
-2.2 GANThe generator network takes the role of the painter, tasked with producingrealistic-looking ...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/11/27</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" target="_blank" rel="noopener" data-tags = "deep learning">deep learning</a>
-    
-</div>
-            
-        </div>
     </article>
+    <!-- license  -->
     
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2019/11/25/paper/" >
-            
-                <span>阅读笔记</span>
-        </a>
-        <div class="abstract-content">
-            11月主要论文整理最近刚写完毕设和实习复现论文的工作，打算浏览下近期的预训练语言模型的论文（毕设里简单介绍了下这个的思想，并且以后工作了可能会做相关的工作，所以在这学习下）。我们可以以Glue榜单来check下最近的预训练语言模型的论文。据目前所知的情况来看，可以分为几个部分：
-
-修改bert的模型：参数量|本身框架
-修改预训练目标
-添加一些先验知识
-
-2019-11-18修改bert模型
-xlnet
-albert
-
-出发点：目前的预训练模型参数量太大，降低模型参数量
-贡献：设计了两种减少参数量的技术，设计了一个自监督损失来建模句内共现，有利于多句输入的下游任务
-code
-摘要：
-
-作者...
+        <div class="license-wrapper">
+            <p>Author：<a href="http://NoneWait.github.io">DelaiQ</a>
+            <p>原文链接：<a href="http://nonewait.github.io/2019/11/27/deeplearning%20in%20pytorch%E7%AC%AC%E4%BA%8C%E7%AB%A0/">http://nonewait.github.io/2019/11/27/deeplearning%20in%20pytorch%E7%AC%AC%E4%BA%8C%E7%AB%A0/</a>
+            <p>发表日期：<a href="http://nonewait.github.io/2019/11/27/deeplearning%20in%20pytorch%E7%AC%AC%E4%BA%8C%E7%AB%A0/">November 27th 2019, 2:32:51 pm</a>
+            <p>更新日期：<a href="http://nonewait.github.io/2019/11/27/deeplearning%20in%20pytorch%E7%AC%AC%E4%BA%8C%E7%AB%A0/">November 27th 2019, 4:18:47 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/11/25</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" target="_blank" rel="noopener" data-tags = "LM">LM</a>
-    
-</div>
-            
-        </div>
-    </article>
     
     <!-- paginator  -->
-    
-</main>
-            <!-- profile -->
+    <ul class="post-paginator">
+        <li class="next">
             
-            <div class="profile">
-    <img class="profile-avatar" alt="avatar" src= /avatar/Misaka.jpg >
-    <div class="profile-name">delaiQ</div>
-    
-    <div class="profile-signature">
-        有时候人生就是这样起起落落落落落落落
-    </div>
-    
-    
-    <div class="profile-social">
-        
-    
-        
+        </li>
+        <li class="previous">
             
-                <a href="mailto:delaiqiu@163.com" target="_blank" rel="noopener" class="iconfont-archer email" title=email ></a>
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2019/11/25/paper/" title= "阅读笔记">
+                    <div class="prevTitle">阅读笔记</div>
+                </a>
             
-        
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
     
-        
-            
-                <a href="//github.com/NoneWait" class="iconfont-archer github" target="_blank" title=github></a>
-            
-        
     
-        
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
     
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
     
 
-    </div>
-    
-    
-    
-</div>
+    <!-- 评论 -->
+</main>
+
+            <!-- profile -->
             
         </div>
         <footer class="footer footer-unloaded">
@@ -577,6 +528,24 @@ code
 </footer>
     </div>
     <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#目的"><span class="toc-number">1.</span> <span class="toc-text">目的</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#第二章-预训练网络"><span class="toc-number">1.1.</span> <span class="toc-text">第二章 预训练网络</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-GAN"><span class="toc-number">1.1.1.</span> <span class="toc-text">2.2 GAN</span></a></li></ol></li></ol></li></ol>
+    </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
     <div class="sidebar sidebar-hide">
@@ -706,6 +675,8 @@ jsonContent:
     
     </div>
     <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
      
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
